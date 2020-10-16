@@ -27,7 +27,7 @@ namespace zTest
 
             public override string ToString()
             {
-                return $"{Name,-20} {Team,-10} {varERA,-7}" +
+                return $"{Name,-20} {varERA,-7}" +
                     $"{varIPS,-7} {varKO9,-7} {varGBP,-7} " +
                     $"{varBB9,-7} {varFBP,-7} {playerId,-20}";
 
@@ -127,7 +127,7 @@ namespace zTest
             }
 
 
-            
+
 
 
         }
@@ -138,26 +138,33 @@ namespace zTest
 
             string file2000Pitching = "2000_pitching_qualified.csv";
             string file2002Pitching = "2002_pitching_qualified.csv";
+            string file1999Pitching = "pitchers_1999_2002.csv";
 
-            List<Pitcher> pitchers2000 = new List<Pitcher>();
-            List<Pitcher> pitchers2002 = new List<Pitcher>();
+            List<Pitcher> pitchers = new List<Pitcher>();
+            LoadPitchers(pitchers, file1999Pitching);
 
-            LoadPitchers(pitchers2000, file2000Pitching);
-            LoadPitchers(pitchers2002, file2002Pitching);
+            PrintPitchers(pitchers);
+
+
+            //List<Pitcher> pitchers2000 = new List<Pitcher>();
+            //List<Pitcher> pitchers2002 = new List<Pitcher>();
+
+            //LoadPitchers(pitchers2000, file2000Pitching);
+            //LoadPitchers(pitchers2002, file2002Pitching);
 
             //Console.WriteLine("\nPitchers (2002)");
             //PrintPitchers(pitchers2002);
 
 
 
-            Console.WriteLine("Before Pitchers (2000)");
-            PrintPitchers(pitchers2000);
+            //Console.WriteLine("Before Pitchers (2000)");
+            //PrintPitchers(pitchers2000);
 
-            CombinePitcherLists(pitchers2000, pitchers2002);
-            pitchers2000 = pitchers2000.FindAll(x => x.varGBP > 0);
+            //CombinePitcherLists(pitchers2000, pitchers2002);
+            //pitchers2000 = pitchers2000.FindAll(x => x.varGBP > 0);
 
-            Console.WriteLine("After Pitchers (2000)");
-            PrintPitchers(pitchers2000);
+            //Console.WriteLine("After Pitchers (2000)");
+            //PrintPitchers(pitchers2000);
 
 
         }
