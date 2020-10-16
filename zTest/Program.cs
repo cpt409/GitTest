@@ -2,7 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using static System.Console;
-
+using System.Linq;
 
 namespace zTest
 {
@@ -27,11 +27,11 @@ namespace zTest
 
             public override string ToString()
             {
-                //return $"{Name,-20} {Team, -10} {varERA, -7}" +
-                //    $"{varIPS, -7} {varKO9, -7} {varGBP, -7} " +
-                //    $"{varBB9, -7} {varFBP, -7} {playerId, -20}";
+                return $"{Name,-20} {Team,-10} {varERA,-7}" +
+                    $"{varIPS,-7} {varKO9,-7} {varGBP,-7} " +
+                    $"{varBB9,-7} {varFBP,-7} {playerId,-20}";
 
-                return $"{playerId, 10}   {Name,-25} {varGBP,-7}";
+                //                return $"{playerId,10}   {Name,-25} {varGBP,-7} {varFBP,-7}";
             }
 
         }
@@ -69,8 +69,13 @@ namespace zTest
                         double.TryParse(item[2], out tempERA);
                         double.TryParse(item[3], out tempIP);
                         double.TryParse(item[4], out tempKO9);
+
+                        item[5] = item[5].Trim('%');
                         double.TryParse(item[5], out tempGBP);
+
                         double.TryParse(item[6], out tempBB9);
+
+                        item[7] = item[7].Trim('%');
                         double.TryParse(item[7], out tempFBP);
                         int.TryParse(item[8], out tempPlayerId);
 
@@ -104,9 +109,32 @@ namespace zTest
             Console.WriteLine($"{pitchers.Count}");
         }
 
+
+        static void CombinePitcherLists(List<Pitcher> first, List<Pitcher> second)
+        {
+            //            var combined = 
+
+            List<Pitcher> newList = new List<Pitcher>();
+
+            foreach (var f in first)
+            {
+                var n = second.Find(x => x.playerId == f.playerId);
+                if (n is Pitcher)
+                {
+                    f.varGBP = n.varGBP;
+                    f.varFBP = n.varFBP;
+                }
+            }
+
+
+            
+
+
+        }
+
         static void Main(string[] args)
         {
-            
+
 
             string file2000Pitching = "2000_pitching_qualified.csv";
             string file2002Pitching = "2002_pitching_qualified.csv";
@@ -117,10 +145,20 @@ namespace zTest
             LoadPitchers(pitchers2000, file2000Pitching);
             LoadPitchers(pitchers2002, file2002Pitching);
 
-            Console.WriteLine("Pitchers (2000)");
+            //Console.WriteLine("\nPitchers (2002)");
+            //PrintPitchers(pitchers2002);
+
+
+
+            Console.WriteLine("Before Pitchers (2000)");
             PrintPitchers(pitchers2000);
-            Console.WriteLine("\nPitchers (2002)");
-            PrintPitchers(pitchers2002);
+
+            CombinePitcherLists(pitchers2000, pitchers2002);
+            pitchers2000 = pitchers2000.FindAll(x => x.varGBP > 0);
+
+            Console.WriteLine("After Pitchers (2000)");
+            PrintPitchers(pitchers2000);
+
 
         }
     }
