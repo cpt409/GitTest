@@ -41,7 +41,23 @@ namespace zTest
 
         }
 
-        static void LoadPitchers(List<Pitcher> pitchers, string filename)
+
+        static List<string> SetPitcherTitle(string title)
+        {
+            var tempTitleArray = title.Split(',');
+            var tempTitleList = tempTitleArray.ToList();
+
+            List<string> temp = new List<string>();
+            foreach (var item in tempTitleList)
+            {
+                temp.Add(item);
+            }
+
+            return temp;
+        }
+
+
+        static void LoadPitchers(List<Pitcher> pitchers, string filename, List<string> title)
         {
             try
             {
@@ -52,12 +68,15 @@ namespace zTest
                     double tempIP = 0.0, tempKO9 = 0.0, tempGBP = 0.0,
                         tempBB9 = 0.0, tempFBP = 0.0;
 
-                    sr.ReadLine();
+                    // skip first line because it is the header row
+                    var tempTitleLine = sr.ReadLine();
+
+                    //                  // keep these two lines if you want to print the title
+                    //                    title = SetPitcherTitle(tempTitleLine);
+                    //                  PrintPitcherTitle(title);
 
                     while (!sr.EndOfStream)
                     {
-
-
                         //int tempPlayerId;
                         //double tempERA, tempIP, tempKO9, tempGBP,
                         //    tempBB9, tempFBP;
@@ -105,7 +124,9 @@ namespace zTest
 
         static void PrintPitchers(List<Pitcher> pitchers)
         {
+            pitchers = pitchers.OrderByDescending(x => x.varGBP).ToList();
             pitchers.ForEach(x => Console.WriteLine($"{x}"));
+
             Console.WriteLine($"{pitchers.Count}");
         }
 
@@ -125,25 +146,49 @@ namespace zTest
                     f.varFBP = n.varFBP;
                 }
             }
+        }
 
+        static void SortPitchers(List<Pitcher> pitchers)
+        {
+            pitchers.OrderByDescending(x => x.varGBP);
 
+        }
 
+        static List<Pitcher> RemoveGBP(List<Pitcher> pitchers)
+        {
+            pitchers.RemoveAll(x => x.varGBP < 1);
+            return pitchers;
+        }
 
+        static void PrintPitcherTitle(List<string> title)
+        {
+            if (title.Count > 0)
+            {
+                Console.WriteLine();
+                foreach (var item in title)
+                {
+                    Console.Write($"{item}\t");
+                }
+
+                Console.WriteLine("\n");
+            }
 
         }
 
         static void Main(string[] args)
         {
 
+            List<string> title = new List<string>();
 
             string file2000Pitching = "2000_pitching_qualified.csv";
             string file2002Pitching = "2002_pitching_qualified.csv";
             string file1999Pitching = "pitchers_1999_2002.csv";
 
             List<Pitcher> pitchers = new List<Pitcher>();
-            LoadPitchers(pitchers, file1999Pitching);
-
+            LoadPitchers(pitchers, file1999Pitching, title);
+            RemoveGBP(pitchers);
             PrintPitchers(pitchers);
+
 
 
             //List<Pitcher> pitchers2000 = new List<Pitcher>();
