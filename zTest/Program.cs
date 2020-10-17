@@ -3,14 +3,22 @@ using System.IO;
 using System.Collections.Generic;
 using static System.Console;
 using System.Linq;
+using zTest.Models;
+using System.Data.SqlTypes;
+using System.Linq.Expressions;
+using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
+using System.Data.Entity.Core;
+using System.Data.Entity.SqlServer;
+
 
 namespace zTest
 {
     class Program
     {
-        class Pitcher
+        class PitcherFan
         {
-            public Pitcher()
+            public PitcherFan()
             {
 
             }
@@ -57,7 +65,7 @@ namespace zTest
         }
 
 
-        static void LoadPitchers(List<Pitcher> pitchers, string filename, List<string> title)
+        static void LoadPitchers(List<PitcherFan> pitchers, string filename, List<string> title)
         {
             try
             {
@@ -97,7 +105,7 @@ namespace zTest
                         double.TryParse(item[7], out tempFBP);
                         int.TryParse(item[8], out tempPlayerId);
 
-                        pitchers.Add(new Pitcher()
+                        pitchers.Add(new PitcherFan()
                         {
                             Name = item[0],
                             Team = item[1],
@@ -121,7 +129,7 @@ namespace zTest
             }
         }
 
-        static void PrintPitchers(List<Pitcher> pitchers)
+        static void PrintPitchers(List<PitcherFan> pitchers)
         {
             pitchers = pitchers.OrderByDescending(x => x.varGBP).ToList();
             pitchers.ForEach(x => Console.WriteLine($"{x}"));
@@ -130,16 +138,16 @@ namespace zTest
         }
 
 
-        static void CombinePitcherLists(List<Pitcher> first, List<Pitcher> second)
+        static void CombinePitcherLists(List<PitcherFan> first, List<PitcherFan> second)
         {
             //            var combined = 
 
-            List<Pitcher> newList = new List<Pitcher>();
+            List<PitcherFan> newList = new List<PitcherFan>();
 
             foreach (var f in first)
             {
                 var n = second.Find(x => x.playerId == f.playerId);
-                if (n is Pitcher)
+                if (n is PitcherFan)
                 {
                     f.varGBP = n.varGBP;
                     f.varFBP = n.varFBP;
@@ -147,13 +155,13 @@ namespace zTest
             }
         }
 
-        static void SortPitchers(List<Pitcher> pitchers)
+        static void SortPitchers(List<PitcherFan> pitchers)
         {
             pitchers.OrderByDescending(x => x.varGBP);
 
         }
 
-        static List<Pitcher> RemoveGBP(List<Pitcher> pitchers)
+        static List<PitcherFan> RemoveGBP(List<PitcherFan> pitchers)
         {
             pitchers.RemoveAll(x => x.varGBP < 1);
             return pitchers;
@@ -174,12 +182,79 @@ namespace zTest
 
         }
 
-        static public void InsertIntoPitcherBuff()
+        static void InsertIntoPitcherBuff(List<PitcherFan> pitchers)
         {
+            using (var context = new BBStats3Context())
+            {
+             //   var pitchers = context.Pitchers.ToList();
+                var buffs = context.Buffs.ToList();
 
-            //using (var context = new 
+                foreach (var p in pitchers)
+                {
+                    if (p.varKO9 > 8.0)
+                    {
+                        
+                        try
+                        {
+                            context.PitcherBuff.Add(new PitcherBuff
+                            {
+                                PitcherId = p.playerId,
+                                BuffId = 1
+                            });
 
 
+                            Console.WriteLine($"{p.playerId} {p.Name} has been added to the Database.");
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
+                        //     context.PitcherBuff.InsertOn
+
+
+                    }
+                }
+
+                Console.WriteLine($"\n{pitchers.Count} records added to database.");
+                context.SaveChanges();
+
+            }
+        }
+
+        static void InsertIntoPitcher(List<PitcherFan> pitchers)
+        {
+            using (var context = new BBStats3Context())
+            {
+                pitchers.ForEach(x => context.Pitchers.Add(new Pitchers
+                {
+                    PitcherName = x.Name,
+                    TeamName = x.Team,
+                    VarEra = x.varERA,
+                    VarIps = x.varIPS,
+                    VarKo9 = x.varKO9,
+                    VarGbp = x.varGBP,
+                    VarBb9 = x.varBB9,
+                    VarFb9 = x.varFBP
+                }));
+
+                //foreach (var x in pitchers)
+                //{
+                //    context.Pitchers.Add(new Pitchers
+                //    {
+                //        PitcherName = x.Name,
+                //        TeamName = x.Team,
+                //        VarEra = x.varERA,
+                //        VarIps = x.varIPS,
+                //        VarKo9 = x.varKO9,
+                //        VarGbp = x.varGBP,
+                //        VarBb9 = x.varBB9,
+                //        VarFb9 = x.varFBP
+                //    });
+                //}
+
+                context.SaveChanges();
+            }
         }
 
 
@@ -188,18 +263,19 @@ namespace zTest
 
             List<string> title = new List<string>();
 
-            string file2000Pitching = "2000_pitching_qualified.csv";
-            string file2002Pitching = "2002_pitching_qualified.csv";
+         //   string file2000Pitching = "2000_pitching_qualified.csv";
+         //   string file2002Pitching = "2002_pitching_qualified.csv";
             string file1999Pitching = "pitchers_1999_2002.csv";
 
-            List<Pitcher> pitchers = new List<Pitcher>();
+            List<PitcherFan> pitchers = new List<PitcherFan>();
             LoadPitchers(pitchers, file1999Pitching, title);
             RemoveGBP(pitchers);
             //PrintPitcherTitle(title);
             //PrintPitchers(pitchers);
 
-            InsertIntoPitcherBuff();
+            //InsertIntoPitcherBuff(pitchers);
 
+            InsertIntoPitcher(pitchers);
 
         }
     }
