@@ -71,9 +71,8 @@ namespace zTest
                     // skip first line because it is the header row
                     var tempTitleLine = sr.ReadLine();
 
-                    //                  // keep these two lines if you want to print the title
-                    //                    title = SetPitcherTitle(tempTitleLine);
-                    //                  PrintPitcherTitle(title);
+                    title = SetPitcherTitle(tempTitleLine);
+                    // PrintPitcherTitle(title);
 
                     while (!sr.EndOfStream)
                     {
@@ -175,6 +174,15 @@ namespace zTest
 
         }
 
+        static public void InsertIntoPitcherBuff()
+        {
+
+            //using (var context = new 
+
+
+        }
+
+
         static void Main(string[] args)
         {
 
@@ -187,29 +195,10 @@ namespace zTest
             List<Pitcher> pitchers = new List<Pitcher>();
             LoadPitchers(pitchers, file1999Pitching, title);
             RemoveGBP(pitchers);
-            PrintPitchers(pitchers);
+            //PrintPitcherTitle(title);
+            //PrintPitchers(pitchers);
 
-
-
-            //List<Pitcher> pitchers2000 = new List<Pitcher>();
-            //List<Pitcher> pitchers2002 = new List<Pitcher>();
-
-            //LoadPitchers(pitchers2000, file2000Pitching);
-            //LoadPitchers(pitchers2002, file2002Pitching);
-
-            //Console.WriteLine("\nPitchers (2002)");
-            //PrintPitchers(pitchers2002);
-
-
-
-            //Console.WriteLine("Before Pitchers (2000)");
-            //PrintPitchers(pitchers2000);
-
-            //CombinePitcherLists(pitchers2000, pitchers2002);
-            //pitchers2000 = pitchers2000.FindAll(x => x.varGBP > 0);
-
-            //Console.WriteLine("After Pitchers (2000)");
-            //PrintPitchers(pitchers2000);
+            InsertIntoPitcherBuff();
 
 
         }
