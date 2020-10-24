@@ -8,5 +8,6 @@ namespace xTest.Models
         public int StarterBuffId { get; set; }
         public int StarterId { get; set; }
         public int BuffId { get; set; }
+        public int FanId { get; set; }
     }
 }

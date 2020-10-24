@@ -24,7 +24,7 @@ namespace xTest.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=.\\;Database=BBStats4;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=.\\;Database=bbstats4;Trusted_Connection=True;");
             }
         }
 
@@ -49,6 +49,8 @@ namespace xTest.Models
                 entity.Property(e => e.StarterBuffId).HasColumnName("starterBuffId");
 
                 entity.Property(e => e.BuffId).HasColumnName("buffId");
+
+                entity.Property(e => e.FanId).HasColumnName("fanId");
 
                 entity.Property(e => e.StarterId).HasColumnName("starterId");
             });
